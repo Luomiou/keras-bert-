@@ -1,30 +1,8 @@
 # post
 Keras-bert  实现文本分类
-目录
-
-1. 安装Keras、keras-bert、tensorflow	1
-2. 下载bert模型	1
-3. 分类	1
-一、 项目实现	2
-1.1. 数据集	2
-1.2. 流程	2
-1.2.1. 导入的包和参数	2
-1.2.2. 得到编码	3
-1.2.3. 健壮性编码	3
-1.2.4. 读取数据	4
-1.2.5. 将文字进行编码	4
-1.2.6. 加载Bert模型和构建自己的模型	5
-1.2.7. 运行	6
-1.2.8. 结果	6
-1.2.9. 总结	7
-参考：	7
-
-
-
-
-
 
 前言：Bert讲解网上很多，就不累赘。使用Keras-bert实现分类很少，故尝试使用。使用过程如下
+
 1.安装Keras、keras-bert、tensorflow
    pip install XXX -i https://pypi.douban.com/simple/
 2.下载bert模型
