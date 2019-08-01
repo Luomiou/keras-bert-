@@ -6,7 +6,9 @@ import os
 import sys
 
 import numpy as np
-from keras import Input, Model, losses
+import yaml
+from keras import Input, Model, losses, Sequential
+from keras.activations import relu, sigmoid
 from keras.layers import Lambda, Dense
 from keras.optimizers import Adam
 from keras.preprocessing import sequence
@@ -110,8 +112,6 @@ def build_bert_model(X1,X2):
     :param X2:经过编码过后的位置集合
     :return:模型
     '''
-    # 标签类，其中选取3000个积极的文本和3000个消极的文本，将积极的记为1，将消极的记为0
-    y = np.concatenate((np.ones(3000, dtype=int), np.zeros(3000, dtype=int)))
 
     #  ！！！！！！ 非常重要的！！！非常重要的！！！非常重要的！！！
     # 加载  Google 训练好的模型bert 就一句话，非常完美prefect
@@ -121,35 +121,35 @@ def build_bert_model(X1,X2):
     # 注：https://storage.googleapis.com/bert_models/2018_11_03/chinese_L-12_H-768_A-12.zip，
     #     下载完之后，解压得到4个文件，直接放到 项目的路径下，要写上绝对路径，以防出现问题。
     # 安装 keras-bert：pip install keras-bert
+    wordvec = bert_model.predict([X1,X2])
+    return wordvec
 
-    x1 = Input(shape=(None,))
-    x2 = Input(shape=(None,))
-    x = bert_model([x1,x2])
-    # 取出[CLS]对应的向量用来做分类
-    x = Lambda(lambda x: x[:, 0])(x)
-    # p是结果，即标签，其中 1 是表示标签的类别数，本数据集是2类，故为1
-    # 如果 是 N 类的话，可将 y 用以下代码实现
-
-    # y = keras.utils.to_categorical(y,num_classes=2)
-    # p = Dense(2, activation='sigmoid')(x)
-    
-    p = Dense(1,activation='sigmoid')(x)
-    # 函数式输入
-    model = Model([x1,x2],p)
-    model.compile(loss=losses.binary_crossentropy,optimizer=Adam(1e-5),metrics=['accuracy'])
+def build_model():
+    model =Sequential()
+    model.add(Dense(128,activation=relu))
+    model.add(Dense(1,activation=sigmoid))
+    model.compile(loss=losses.binary_crossentropy, optimizer=Adam(1e-5), metrics=['accuracy'])
     model.summary()
-    model.fit([X1,X2],y,epochs=10,batch_sizdingyie=32,validation_split=0.2)
-
-    # model.save_weights()
     return model
 
+def train(wordvec,y):
+    model = build_model()
+    model.fit(wordvec,y,batch_size=32,epochs=10,validation_split=0.2)
+    yaml_string = model.to_yaml()
+    with open('test_keras_bert.yml', 'w') as f:
+        f.write(yaml.dump(yaml_string, default_flow_style=True))
+    model.save_weights('test_keras_bert.h5')
 
 if __name__ =='__main__':
     pos,neg = get_data()
     token_dict = get_token_dict(dict_path)
     # get_encode()
     [X1,X2] = get_encode(pos,neg,token_dict)
-    build_bert_model(X1,X2)
-
+    wordvec = build_bert_model(X1,X2)
+    # 标签类，其中选取3000个积极的文本和3000个消极的文本，将积极的记为1，将消极的记为0
+    y = np.concatenate((np.ones(3000, dtype=int), np.zeros(3000, dtype=int)))
+    # y = keras.utils.to_categorical(y,num_classes=2)
+    # p = Dense(2, activation='sigmoid')(x)
+    train(wordvec,y)
 
 
