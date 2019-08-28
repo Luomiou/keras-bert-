@@ -129,12 +129,13 @@ def build_model():
     model.add(Dense(128,activation=relu))
     model.add(Dense(1,activation=sigmoid))
     model.compile(loss=losses.binary_crossentropy, optimizer=Adam(1e-5), metrics=['accuracy'])
-    model.summary()
+    
     return model
 
 def train(wordvec,y):
     model = build_model()
     model.fit(wordvec,y,batch_size=32,epochs=10,validation_split=0.2)
+    model.summary()
     yaml_string = model.to_yaml()
     with open('test_keras_bert.yml', 'w') as f:
         f.write(yaml.dump(yaml_string, default_flow_style=True))
