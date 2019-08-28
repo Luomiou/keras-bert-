@@ -16,7 +16,7 @@ from keras_bert import Tokenizer, load_trained_model_from_checkpoint
 
 syspath = sys.path[1]+'/hotl'
 os.chdir(syspath)
-# 注意！！！！特别注意！！！此处要慎重，是绝对路径，以下内容是Bert-Pre-training
+# 注意！！！！特别注意！！！此处要慎重，以下内容是Bert-Pre-training
 config_path = 'D:\Pycharm\post\hotl\chinese_L-12_H-768_A-12\\bert_config.json'# 加载配置文件
 checkpoint_path = 'D:\Pycharm\post\hotl\chinese_L-12_H-768_A-12\\bert_model.ckpt'
 dict_path = 'D:\Pycharm\post\hotl\chinese_L-12_H-768_A-12\\vocab.txt'
