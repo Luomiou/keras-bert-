@@ -126,7 +126,7 @@ def build_bert_model(X1,X2):
 
 def build_model():
     model =Sequential()
-    model.add(Dense(128,activation=relu))
+    model.add(Bidirectional(LSTM(128)))
     model.add(Dense(1,activation=sigmoid))
     model.compile(loss=losses.binary_crossentropy, optimizer=Adam(1e-5), metrics=['accuracy'])
     
